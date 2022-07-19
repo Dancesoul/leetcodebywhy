@@ -1,4 +1,4 @@
-#LeetCode 做题日记
+# LeetCode 做题日记
 
 #### LeetCode id ：miracle.why
 #### EMail： miracle.why@qq.com
