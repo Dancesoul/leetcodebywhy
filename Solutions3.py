@@ -556,7 +556,7 @@ class Solution:
     def subsets(self, nums: List[int]) -> List[List[int]]:
         # 78. 子集
         import itertools
-        return  list(itertools.product("".join(nums),repeat=2))
+        return list(itertools.product("".join(nums),repeat=2))
 
     def minimumDifference(self, nums: List[int], k: int) -> int:
         # 1984. 学生分数的最小差值
@@ -572,16 +572,44 @@ class Solution:
 
         return minnum
 
-    def wiggleSort(self, nums: List[int]) -> None:
+    def removeAnagrams(self, words: List[str]) -> List[str]:
         """
-        Do not return anything, modify nums in-place instead.
+        2273. 移除字母异位词后的结果数组
+        :param words:
+        :return:
         """
+        i=1
+        j=0
+        while i<len(words):
+            left = sorted(words[j])
+            right = sorted(words[i])
+            if left == right:
+                words.pop(i)
+            else:
+                j+=1
+                i+=1
+        return words
 
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        """
+        219. 存在重复元素 II
+        给你一个整数数组 nums 和一个整数 k ，判断数组中是否存在两个 不同的索引i和j
+        满足 nums[i] == nums[j] 且 abs(i - j) <= k 。如果存在，返回 true ；否则，返回 false 。
 
-
+        使用哈希的方式， key存数值，value 存下标。 这样保证值的下标一直都是最大的 最靠近的。
+        :param nums:
+        :param k:
+        :return:
+        """
+        numsdict = {}
+        for key, num in enumerate(nums):
+            if num in numsdict and key - numsdict[num] <=k:
+                return True
+            numsdict[num] = key
+        return False
 
 
 if __name__ == '__main__':
 
     s = Solution()
-    print(s.minimumDifference(nums = [9,5,1,6], k = 2))
+    print(s.containsNearbyDuplicate(nums = [1,2,3,1,2,3], k = 2))
