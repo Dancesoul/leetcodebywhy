@@ -716,7 +716,36 @@ class Solution:
                 return True
         return False
 
+    def maximumUnits(self, boxTypes: List[List[int]], truckSize: int) -> int:
+        """
+        1710. 卡车上的最大单元数
+        请你将一些箱子装在 一辆卡车 上。给你一个二维数组 boxTypes ，其中 boxTypes[i] = [numberOfBoxesi, numberOfUnitsPerBoxi] ：
+        numberOfBoxesi 是类型 i 的箱子的数量。
+        numberOfUnitsPerBoxi 是类型 i每个箱子可以装载的单元数量。
+        整数 truckSize 表示卡车上可以装载 箱子 的 最大数量 。只要箱子数量不超过 truckSize ，你就可以选择任意箱子装到卡车上。
+
+        返回卡车可以装载单元 的 最大 总数。
+
+        :param boxTypes:
+        :param truckSize:
+        :return:
+        """
+        boxTypes.sort(key=lambda x: x[1], reverse=True)
+        i = 0
+        res = 0
+        while truckSize > 0 and i < len(boxTypes):
+            numberOfBoxes = boxTypes[i][0]
+            numberOfUnitsPerBox = boxTypes[i][1]
+            if numberOfBoxes >= truckSize:
+                res += truckSize * numberOfUnitsPerBox
+                return res
+            else:
+                res += numberOfBoxes * numberOfUnitsPerBox
+                truckSize -= numberOfBoxes
+                i += 1
+        return res
+
 
 if __name__ == '__main__':
     s = Solution()
-    print(s.diagonalSum(mat=[[5]]))
+    print(s.maximumUnits([[1, 3], [5, 5], [2, 5], [4, 2], [4, 1], [3, 1], [2, 2], [1, 3], [2, 5], [3, 2]], 35))
