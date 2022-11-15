@@ -7,6 +7,8 @@ import string
 import math
 import pymysql
 import re
+from collections import OrderedDict
 
+s = ("Alice",'alice')
 
-print(10*pow(1.05,3))
+print(1<<4)
