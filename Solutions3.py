@@ -9,6 +9,8 @@ Description:
 """
 __author__ = 'miracle.why@qq.com'
 
+import itertools
+import math
 import string
 from typing import *
 
@@ -745,7 +747,229 @@ class Solution:
                 i += 1
         return res
 
+    def isIdealPermutation(self, nums: List[int]) -> bool:
+        """
+        775. 全局倒置与局部倒置
+
+        :param nums:
+        :return:
+        """
+        return all(abs(x - i) <= 1 for i, x in enumerate(nums))
+
+    def numMatchingSubseq(self, s: str, words: List[str]) -> int:
+        """
+        792. 匹配子序列的单词数
+        :param s:
+        :param words:
+        :return:
+        """
+        s = "".join(sorted(s))
+        print(s)
+        res = 0
+        for word in words:
+            if "".join(sorted(word)) in s:
+                res += 1
+        return res
+
+    def divideString(self, s: str, k: int, fill: str) -> List[str]:
+        """
+        2138. 将字符串拆分为若干长度为 k 的组
+        :param s:
+        :param k:
+        :param fill:
+        :return:
+        """
+        lens = len(s)
+        start = 0
+        res = []
+        stop = k
+        while stop < lens:
+            temp = s[start:stop]
+            res.append(temp)
+            start = stop
+            stop += k
+        res.append(s[start:lens] + (stop - lens) * fill)
+        return res
+
+    def numberOfPairs(self, nums: List[int]) -> List[int]:
+        """
+        2341. 数组能形成多少数对
+        :param nums:
+        :return:
+        """
+        nums.sort()
+        i = 1
+        res = [0]
+        while i < len(nums):
+            if nums[i] == nums[i - 1]:
+                res[0] += 1
+                nums.pop(i)
+                nums.pop(i - 1)
+            else:
+                i += 1
+        res.append(len(nums))
+        return res
+
+    def finalValueAfterOperations(self, operations: List[str]) -> int:
+        """
+        2011. 执行操作后的变量值
+        :param operations:
+        :return:
+        """
+        res = 0
+        for i in operations:
+            if '+' in i:
+                res += 1
+            else:
+                res -= 1
+        return res
+
+    def mostVisited(self, n: int, rounds: List[int]) -> List[int]:
+        """
+        1560. 圆形赛道上经过次数最多的扇区
+        :param n:
+        :param rounds:
+        :return:
+        """
+        start, end = rounds[0], rounds[-1]
+        if start <= end:
+            return list(range(start, end + 1))
+        else:
+            leftPart = range(1, end + 1)
+            rightPart = range(start, n + 1)
+            return list(itertools.chain(leftPart, rightPart))
+
+    def minNumBooths(self, demand: List[str]) -> int:
+        """
+        LCP 66. 最小展台数量
+        :param demand:
+        :return:
+        """
+        res = ""
+        for demands in demand:
+            temp = res
+            for word in demands:
+                if word not in res:  # 判断有没有这个类型 没有就加上
+                    res += word
+                elif word not in temp:  # 判断这个类型的台够不够
+                    res += word
+                else:
+                    temp = temp.replace(word, "", 1)  # 当天使用过的台，就去掉
+        return len(res)
+
+    def temperatureTrend(self, temperatureA: List[int], temperatureB: List[int]) -> int:
+        """
+        LCP 61. 气温变化趋势
+        :param temperatureA:
+        :param temperatureB:
+        :return:
+        """
+        lens = len(temperatureA)
+        maxnum = 0  # 存连续变化相同的最大天数
+        i = 0
+
+        while i < lens - 1:
+            curnum = 0  # 本轮连续天数
+            j = i
+            while j < lens - 1:
+                if temperatureA[j + 1] > temperatureA[j] and temperatureB[j + 1] > temperatureB[j]:
+                    curnum += 1
+                    j += 1
+                    continue
+
+                elif temperatureA[j + 1] == temperatureA[j] and temperatureB[j + 1] == temperatureB[j]:
+                    curnum += 1
+                    j += 1
+                    continue
+
+                elif temperatureA[j + 1] < temperatureA[j] and temperatureB[j + 1] < temperatureB[j]:
+                    curnum += 1
+                    j += 1
+                    continue
+
+                else:
+                    break
+
+            i = j + 1
+            maxnum = max(maxnum, curnum)
+        return maxnum
+
+    def getMinimumTime(self, time: List[int], fruits: List[List[int]], limit: int) -> int:
+        """
+        LCP 55. 采集果实
+        :param time:
+        :param fruits:
+        :param limit:
+        :return:
+        """
+        res = 0
+        for fruit in fruits:
+            unittime = time[fruit[0]]  # 采集当前这个类型1次需要花的时间
+            unit = math.ceil(fruit[1] / limit)  # 采集当前水果需要花费的次数
+            res += unittime * unit
+        return res
+
+    def perfectMenu(self, materials: List[int], cookbooks: List[List[int]], attribute: List[List[int]],
+                    limit: int) -> int:
+        """
+        LCP 51. 烹饪料理
+        :param materials:
+        :param cookbooks:
+        :param attribute:
+        :param limit:
+        :return:
+        """
+        global res  # 存放可以满足饱腹感的最大美味值
+        res = -1
+
+        def helper(materials, cookbooks, attribute, surplus, need, delicious, index):
+            """
+            用来递归遍历可以做的料理  把所有结果都遍历出来
+            :param surplus:  剩余的食材数量
+            :param delicious:  美味值
+            :param need:   饱腹感
+            :param index:  第 index 道料理
+            :return:
+            """
+            global res
+            if need <= 0:  # 已经吃饱 那么就结算当前美味值
+                res = max(res, delicious)
+            for i in range(index, len(cookbooks)):  # 遍历料理
+                enough = True
+                temp = [0] * len(materials)
+                for j in range(len(materials)):  # 遍历食材，看能不能做这个料理
+                    temp[j] = surplus[j] - cookbooks[i][j]
+                    if temp[j] >= 0:
+                        continue
+                    else:
+                        enough = False
+                        break
+                if enough:  # 可以做
+                    helper(materials, cookbooks, attribute, temp, need - attribute[i][1], delicious + attribute[i][0],
+                           i + 1)
+                else:  # 不可以做
+                    helper(materials, cookbooks, attribute, surplus, need, delicious, i + 1)
+
+        helper(materials, cookbooks, attribute, materials, limit, 0, 0)
+        return res
+
+    def giveGem(self, gem: List[int], operations: List[List[int]]) -> int:
+        """
+        LCP 50. 宝石补给
+        :param gem:
+        :param operations:
+        :return:
+        """
+        for i,j in operations:
+            give = math.floor(gem[i]/2)
+            gem[i]-= give
+            gem[j] += give
+
+        return max(gem) - min(gem)
+
+
+
 
 if __name__ == '__main__':
     s = Solution()
-    print(s.maximumUnits([[1, 3], [5, 5], [2, 5], [4, 2], [4, 1], [3, 1], [2, 2], [1, 3], [2, 5], [3, 2]], 35))
+    print(s.giveGem(gem = [100,0,50,100], operations = [[0,2],[0,1],[3,0],[3,0]]))

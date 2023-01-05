@@ -9,6 +9,4 @@ import pymysql
 import re
 from collections import OrderedDict
 
-s = ("Alice",'alice')
-
-print(1<<4)
+print(math.ceil(3/2),math.floor(3/2))
