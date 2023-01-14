@@ -9,4 +9,11 @@ import pymysql
 import re
 from collections import OrderedDict
 
-print(math.ceil(3/2),math.floor(3/2))
+num = [0,1,2,3]
+
+num = 55555
+lens = len(str(num))
+print(math.sqrt(num))
+
+
+

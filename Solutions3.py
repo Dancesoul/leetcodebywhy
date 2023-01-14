@@ -9,6 +9,7 @@ Description:
 """
 __author__ = 'miracle.why@qq.com'
 
+import collections
 import itertools
 import math
 import string
@@ -960,16 +961,204 @@ class Solution:
         :param operations:
         :return:
         """
-        for i,j in operations:
-            give = math.floor(gem[i]/2)
-            gem[i]-= give
+        for i, j in operations:
+            give = math.floor(gem[i] / 2)
+            gem[i] -= give
             gem[j] += give
 
         return max(gem) - min(gem)
 
+    def countEven(self, num: int) -> int:
+        """
+        2180. 统计各位数字之和为偶数的整数个数
+        :param num:
+        :return:
+        """
+        res = 0
+        for n in range(1, num + 1):
+            num = 0
+            while n > 0:
+                temp = divmod(n, 10)
+                n = temp[0]
+                num += temp[1]
+            if num % 2 == 0:
+                res += 1
+        return res
+
+    def maxmiumScore(self, cards: List[int], cnt: int) -> int:
+        """
+        LCP 40. 心算挑战
+        :param cards:
+        :param cnt:
+        :return:
+        """
+        cards.sort(reverse=True)
+        odd = []  # 奇数
+        even = []  # 偶数
+        for card in cards:
+            if card & 1:
+                odd.append(card)
+            else:
+                even.append(card)
+        res = 0
+        if cnt & 1:
+            if len(even):  # 判断奇偶，奇数的话，直接取偶数最大来成对
+                res += even.pop(0)
+            else:
+                return 0
+        cnt >>= 1
+        alls = []
+        for i in range(len(odd) >> 1):
+            alls.append(odd[2 * i] + odd[2 * i + 1])
+
+        for i in range(len(even) >> 1):
+            alls.append(even[2 * i] + even[2 * i + 1])
+
+        card_ = sorted(alls, reverse=True)
+
+        return res + sum(card_[:cnt]) if cnt <= len(card_) else 0
+
+    def minOperations(self, nums: List[int], x: int) -> int:
+        """
+        1658. 将 x 减到 0 的最小操作数
+        :param nums:
+        :param x:
+        :return:
+        """
+        lens = len(nums)
+        total = sum(nums)
+
+        if total < x:
+            return -1
+
+        right = 0
+        lsum = 0
+        rsum = total
+        res = lens + 1
+        for left in range(-1, lens - 1):
+            if left != -1:
+                lsum += nums[left]
+            while right < lens and lsum + rsum > x:
+                rsum -= nums[right]
+                right += 1
+            if lsum + rsum == x:
+                res = min(res, (left + 1) + (lens - right))
+
+        return -1 if res > lens else res
+
+    def minimumSwitchingTimes(self, source: List[List[int]], target: List[List[int]]) -> int:
+        """
+        LCP 39. 无人机方阵
+        :param source:
+        :param target:
+        :return:
+        """
+        lens = len(source)
+        lenss = len(source[0])
+        libs = {str(i): 0 for i in range(10 ** 4)}
+
+        for i in range(lens):
+            for j in range(lenss):
+                s = source[i][j]
+                t = target[i][j]
+                libs[str(t)] += 1
+                libs[str(s)] -= 1
+
+        res = 0
+        for tt in libs:
+            if libs[tt] < 0:
+                res += libs[tt]
+        return res
+
+    def reinitializePermutation(self, n: int) -> int:
+        """
+        1806. 还原排列的最少操作步数
+        :param n:
+        :return:
+        """
+        perm = list(range(n))
+        num = 0
+        while 1:
+            num += 1
+            perm = [perm[int(i / 2)] if i % 2 == 0 else perm[int(n / 2 + (i - 1) / 2)] for i in range(n)]
+            if perm == list(range(n)):
+                return num
+
+    def relativeSortArray(self, arr1: List[int], arr2: List[int]) -> List[int]:
+        """
+        剑指 Offer II 075. 数组相对排序
+        :param arr1:
+        :param arr2:
+        :return:
+        """
+        c = collections.Counter(arr1)
+        res = []
+        notin = []
+        for a in arr2:
+            n = c[a]
+            while n:
+                res.append(a)
+                n -= 1
+            c.pop(a)
+        for k, v in c.most_common():
+            while v:
+                notin.append(k)
+                v -= 1
+        return res + sorted(notin)
+
+    def mySqrt(self, x: int) -> int:
+        """
+        剑指 Offer II 072. 求平方根  这里用牛顿迭代法
+        :param x:
+        :return:
+        """
+        def helper(num, rx, e):
+            """
+            递归求解
+            :param num: 需要求平方根的目标
+            :param rx:  迭代区间
+            :param e:  精度
+            :return:
+            """
+            num *= 1  # 目标初始化
+            if abs(num - rx * rx) < e:
+                return int(rx)
+            else:
+                return helper(num, (num / rx + rx)/2, e)
+
+        return helper(x, 1, 0.1)
+
+    def searchInsert(self, nums: List[int], target: int) -> int:
+        """
+        剑指 Offer II 068. 查找插入位置
+        :param nums:
+        :param target:
+        :return:
+        """
+        lens = len(nums)
+        i = 0
+        j = lens-1
+        if i == j:
+            return 0 if target <= nums[0] else 1
+
+        while i < lens:
+            left = nums[i]
+            right = nums[j]
+            if left == target:
+                return i
+            if right == target:
+                return j
+            if left > target:
+                return i if i > 0 else 0
+            if right < target:
+                return j + 1
+            i += 1
+            j -= 1
 
 
 
 if __name__ == '__main__':
     s = Solution()
-    print(s.giveGem(gem = [100,0,50,100], operations = [[0,2],[0,1],[3,0],[3,0]]))
+    print(s.searchInsert(
+[1,3],
+2))
