@@ -1112,6 +1112,7 @@ class Solution:
         :param x:
         :return:
         """
+
         def helper(num, rx, e):
             """
             递归求解
@@ -1122,9 +1123,10 @@ class Solution:
             """
             num *= 1  # 目标初始化
             if abs(num - rx * rx) < e:
-                return int(rx)
+                # return int(rx)
+                return rx
             else:
-                return helper(num, (num / rx + rx)/2, e)
+                return helper(num, (num / rx + rx) / 2, e)
 
         return helper(x, 1, 0.1)
 
@@ -1137,7 +1139,7 @@ class Solution:
         """
         lens = len(nums)
         i = 0
-        j = lens-1
+        j = lens - 1
         if i == j:
             return 0 if target <= nums[0] else 1
 
@@ -1155,10 +1157,143 @@ class Solution:
             i += 1
             j -= 1
 
+    def countAsterisks(self, s: str) -> int:
+        """
+        2315. 统计星号
+        :param s:
+        :return:
+        """
+        index = 0  # 这里判断星星是不是在偶数个| 内
+        i = 0
+        nums = 0
+        temp = 0
+        while i < len(s):
+            if s[i] == "*":
+                if index == 0 or index % 2 == 0:
+                    nums += 1
+                else:
+                    temp += 1
+            elif s[i] == "|":
+                index += 1
+                if index % 2 == 0:
+                    temp = 0
+            i += 1
+        return nums + temp
+
+    def beautifulBouquet(self, flowers: List[int], cnt: int) -> int:
+        """
+        LCP 68. 美观的花束   经典滑动窗口  找到最大的符合要求区间。 那么其区间内的所有子区间也都符合
+        :param flowers:
+        :param cnt:
+        :return:
+        """
+        c = Counter()
+        res = 0
+        left = 0
+        for right, value in enumerate(flowers):
+            c[value] += 1
+            while c[value] > cnt:
+                c[flowers[left]] -= 1
+                left += 1
+            res += right - left + 1
+        return res % (10 ** 9 + 7)
+
+    def canPartition(self, nums: List[int]) -> bool:
+        """
+        剑指 Offer II 101. 分割等和子集
+        :param nums:
+        :return:
+        """
+
+        sums = sum(nums)
+        if sums % 2 != 0 or len(nums) < 2:
+            return False
+        mid = sums // 2
+        if nums[0] > mid:
+            return False
+
+        dp = [True] + [False] * mid  # 可加入的集合加入到第i个数时，能否使为j的背包恰好填满
+        for i, num in enumerate(nums):
+            for j in range(mid, num - 1, -1):
+                dp[j] |= dp[j - num]
+
+        return dp[mid]
+
+    def isAlienSorted(self, words: List[str], order: str) -> bool:
+        """
+        剑指 Offer II 034. 外星语言是否排序
+        :param words:
+        :param order:
+        :return:
+        """
+        lens = len(words)
+        if lens == 1:
+            return True
+        i = 0
+        j = 1
+        while j < lens:
+            a = list(words[i])
+            b = list(words[j])
+            n = 0
+            minlen = min(len(a), len(b))
+            inbool = True  # 判断一直相同
+            while n < minlen:
+
+                if a[n] == b[n]:
+                    n += 1
+                else:
+                    inbool = False
+                    if order.index(a[n]) < order.index(b[n]):
+                        break
+                    else:
+                        return False
+            if inbool:
+                if len(a) != minlen:
+                    return False
+            i += 1
+            j += 1
+
+        return True
+
+    def checkXMatrix(self, grid: List[List[int]]) -> bool:
+        """
+        2319. 判断矩阵是否是一个 X 矩阵   正对角线： i = j 反对角线: i+j+1 = length
+        :param grid:
+        :return:
+        """
+        lens = len(grid)
+        for i in range(lens):
+            for j in range(lens):
+                if i == j or i + j + 1 == lens:
+                    if grid[i][j] == 0:
+                        return False
+                else:
+                    if grid[i][j] != 0:
+                        return False
+        return True
+
+    def isAnagram(self, s: str, t: str) -> bool:
+        """
+        剑指 Offer II 032. 有效的变位词
+        :param s:
+        :param t:
+        :return:
+        """
+        cs = collections.Counter(s)
+        ct = collections.Counter(t)
+        if cs != ct:
+            return False
+        lens = len(s)
+        find = False
+        for i in range(lens):
+            if s[i] != t[i]:
+                return True
+        if not find:
+            return False
+
+
 
 
 if __name__ == '__main__':
     s = Solution()
-    print(s.searchInsert(
-[1,3],
-2))
+    print(s.isAnagram(s = "a", t = "a"))
