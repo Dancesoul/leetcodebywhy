@@ -1291,9 +1291,27 @@ class Solution:
         if not find:
             return False
 
-
+    def decodeMessage(self, key: str, message: str) -> str:
+        """
+        2325. 解密消息
+        :param key:
+        :param message:
+        :return:
+        """
+        libs = []  # 这里的下标对应 小写字母表的下标 形成对应关系
+        key = key.replace(" ", "")
+        for _ in string.ascii_lowercase:
+            while key[0] in libs:
+                key = key[1:]
+            libs.append(key[0])
+            key = key[1:]
+        message = list(message)
+        for index, word in enumerate(message):
+            if word in libs:
+                message[index] = string.ascii_lowercase[libs.index(word)]
+        return "".join(message)
 
 
 if __name__ == '__main__':
     s = Solution()
-    print(s.isAnagram(s = "a", t = "a"))
+    print(s.decodeMessage(key="the quick brown fox jumps over the lazy dog", message="vkbs bs t suepuv"))
