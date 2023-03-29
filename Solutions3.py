@@ -14,6 +14,7 @@ import itertools
 import math
 import string
 from typing import *
+import datetime
 
 
 class Solution:
@@ -1311,7 +1312,274 @@ class Solution:
                 message[index] = string.ascii_lowercase[libs.index(word)]
         return "".join(message)
 
+    def alertNames(self, keyName: List[str], keyTime: List[str]) -> List[str]:
+        """
+        1604. 警告一小时内使用相同员工卡大于等于三次的人
+        :param keyName:
+        :param keyTime:
+        :return:
+        """
+
+        libs = {}
+        for index, key in enumerate(keyName):
+            if key not in libs:
+                libs[key] = [keyTime[index]]
+            else:
+                libs[key].append(keyTime[index])
+
+        res = []
+        for k in libs:
+            if len(libs[k]) < 3:
+                continue
+
+            num = libs[k]
+            num.sort()
+            while len(num) >= 3:
+                l = datetime.timedelta(hours=int(num[0][0:2]), minutes=int(num[0][3:]))
+                r = datetime.timedelta(hours=int(num[2][0:2]), minutes=int(num[2][3:]))
+                if r - l <= datetime.timedelta(hours=1):
+                    res.append(k)
+                    break
+                else:
+                    num.pop(0)
+
+        return sorted(res)
+
+    def addNegabinary(self, arr1: List[int], arr2: List[int]) -> List[int]:
+        """
+        1073. 负二进制数相加
+        :param arr1:
+        :param arr2:
+        :return:
+        """
+        inta = 0
+        intb = 0
+        lena = len(arr1)
+        lenb = len(arr2)
+        arr1 = arr1[::-1]
+        arr2 = arr2[::-1]
+        for i in range(lena):
+            inta += arr1[i] * ((-2) ** i)
+
+        for j in range(lenb):
+            intb += arr2[j] * ((-2) ** j)
+
+        resint = inta + intb
+        if resint == 0:
+            return [0]
+        res = []
+        while resint != 0:
+            if resint % -2 == 0:
+                res.insert(0, 0)
+                resint //= -2
+            else:
+                res.insert(0, 1)
+                resint = (resint - 1) // -2
+        return res
+
+    def removeSubfolders(self, folder: List[str]) -> List[str]:
+        """
+        1233. 删除子文件夹
+        :param folder:
+        :return:
+        """
+        folder.sort()
+        res = []
+        for i in range(len(folder)):
+            if i == 0 or not folder[i].startswith(res[-1] + '/'):
+                res.append(folder[i])
+        return res
+
+    def reversePairs(self, nums: List[int]) -> int:
+        """
+        493. 翻转对
+        :param nums:
+        :return:
+        """
+        res = 0
+        for l, current in enumerate(nums):
+            temp = nums[l + 1:]
+            temp.sort()
+            while temp:
+                if current > 2 * temp[0]:
+                    res += 1
+                    temp.pop(0)
+                else:
+                    break
+        return res
+
+    def mergeSimilarItems(self, items1: List[List[int]], items2: List[List[int]]) -> List[List[int]]:
+        """
+        2363. 合并相似的物品
+        :param items1:
+        :param items2:
+        :return:
+        """
+        ret = {}
+        for i, j in items1:
+            ret[str(i)] = j
+
+        for n, m in items2:
+            if str(n) in ret:
+                ret[str(n)] += m
+            else:
+                ret[str(n)] = m
+
+        temp = []
+        for k in ret:
+            temp.append([int(k), ret[k]])
+        return sorted(temp)
+
+    def canConvertString(self, s: str, t: str, k: int) -> bool:
+        """
+        1540. K 次操作转变字符串
+        所有位置切换次数不超过K
+        相同需要切换次数的：  取 k 的余数 例如 a->b 可以第1次变换。也可以第27次变换 1%26 ，27%26
+        求切换次数:  1+26*n 有相同需要变换的字符。那么使用这个来判断。
+        例： abc -> bcd
+        每个位置都需要一次变换，1,1,1那么转换成 1,27,53 如果k大于等于53 那么满足
+        需要一个字典来存需要的变换次数 {1:已知的1的最大变换数,2:已知2的最大变换数}
+        :param s:
+        :param t:
+        :param k:
+        :return:
+        """
+        lens = len(s)
+        if len(s) != len(t):
+            return False
+        libs = {}  # 用于记录相同变换次数的辅助字典
+
+        def getfixnum(word1, word2):
+            wordfix = ord(word2) - ord(word1)
+            if wordfix < 0:
+                wordfix += 26
+            return wordfix
+
+        for i in range(lens):
+            if s[i] == t[i]:
+                continue
+            else:
+                fixnum = getfixnum(s[i], t[i])
+                temp = fixnum
+                if fixnum in libs:
+                    temp = libs[fixnum] + 26
+                if temp > k:
+                    return False
+                libs[fixnum] = temp
+        return True
+
+    def largestLocal(self, grid: List[List[int]]) -> List[List[int]]:
+        """
+        2373. 矩阵中的局部最大值
+        :param grid:
+        :return:
+        """
+        import numpy as np
+        lens = len(grid)
+        res = []
+        for i in range(lens - 2):  # 定位3*3的左上角y  也就是二维索引
+            t = []
+            for j in range(lens - 2):  # 定位 3*3的左上角x  一维索引
+                temp = np.array([grid[i][j:j + 3], grid[i + 1][j:j + 3], grid[i + 2][j:j + 3]])
+                t.append(max(temp.flatten()))
+            res.append(t)
+        return res
+
+    def minimumRecolors(self, blocks: str, k: int) -> int:
+        """
+        2379. 得到 K 个黑块的最少涂色次数
+        :param blocks:
+        :param k:
+        :return:
+        """
+        lens = len(blocks)
+
+        maxblack = 0
+        for n in range(k):  # 先算基础的前k个  后续遍历 就只遍历lens - k
+            if blocks[n] == "B":
+                maxblack += 1
+            if maxblack == k:
+                return 0
+        j = k
+        i = 1
+        lastblack = maxblack
+        while j < lens:
+            if blocks[i-1] == "B":
+                lastblack -= 1
+
+            if blocks[j] == "B":
+                lastblack += 1
+
+            #print(blocks[i:j+1],len(blocks[i:j+1]),blocks[i:j+1].count("B"))
+            if lastblack == k:
+                return 0
+            maxblack = max(maxblack,lastblack)
+            j +=1
+            i+=1
+        return k - maxblack
+
+    def getFolderNames(self, names: List[str]) -> List[str]:
+        """
+        1487. 保证文件名唯一
+        1. 名字相同  min后缀 1  保存执行记录
+        要处理的就是  本身带后缀的  带后缀直接判断是否重复
+            1. 后缀和已经执行的重复 那么后缀后再加后缀
+            2. 后缀不和已经执行的重复  那么保存执行记录即可
+
+
+        :param names:
+        :return:
+        """
+
+        def wordindex(word: str)-> (str,int):
+            """
+            判断是不是带后缀，是的话返回 (名字,后缀数字）
+            :param word:
+            :return:
+            """
+            import re
+            pattnum = re.compile("\(([\d]+)\)$")
+            res = re.findall(pattnum, word)
+
+            if res:
+                return (re.sub(pattnum, "", word), int(res[0]))
+            else:
+                return False
+
+        libs = {}  # 存储名字和最小后缀  name: minnum
+        exed = []  # 储存比最小后缀大，但是有名字的特例
+        for i,name in enumerate(names):
+            # 先做判断有没有后缀
+            substr = wordindex(name)
+            if substr:  # 有后缀
+                curname = substr[0]
+                curnum = substr[1]
+                if curname in libs:  # 是否在已存在的名字内
+                    if curnum > libs[curname]:   # 存在 并且大于最小数 ,这时可以直接用。 但是要保存到exed
+                        exed.append(name)
+                    else:  # 但等于最小数，或者小于。 都取最小数来做后缀
+                        names[i]=""
+
+        return names
+
+    def arithmeticTriplets(self, nums: List[int], diff: int) -> int:
+        """
+        2367. 算术三元组的数目
+        :param nums:
+        :param diff:
+        :return:
+        """
+        lens = len(nums)
+        res = 0
+        for i in range(lens-2):
+            for j in range(i+1,lens-1):
+                if nums[i] + diff == nums[j]:
+                    for k in range(j+1,lens):
+                        if nums[j] + diff == nums[k]:
+                            res += 1
+        return res
+
 
 if __name__ == '__main__':
     s = Solution()
-    print(s.decodeMessage(key="the quick brown fox jumps over the lazy dog", message="vkbs bs t suepuv"))
+    print(s.arithmeticTriplets(nums = [4,5,6,7,8,9], diff = 2))

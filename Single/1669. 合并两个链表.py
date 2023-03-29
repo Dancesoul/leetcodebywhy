@@ -18,7 +18,10 @@ class Solution:
         self.bnode = None
 
     def mergeInBetween(self, list1: ListNode, a: int, b: int, list2: ListNode) -> ListNode:
+        """
 
+        :type list1: object
+        """
         def helper(node1: ListNode, i: int):
             if i + 1 == a:
                 self.anode = node1
