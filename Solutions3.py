@@ -1504,18 +1504,18 @@ class Solution:
         i = 1
         lastblack = maxblack
         while j < lens:
-            if blocks[i-1] == "B":
+            if blocks[i - 1] == "B":
                 lastblack -= 1
 
             if blocks[j] == "B":
                 lastblack += 1
 
-            #print(blocks[i:j+1],len(blocks[i:j+1]),blocks[i:j+1].count("B"))
+            # print(blocks[i:j+1],len(blocks[i:j+1]),blocks[i:j+1].count("B"))
             if lastblack == k:
                 return 0
-            maxblack = max(maxblack,lastblack)
-            j +=1
-            i+=1
+            maxblack = max(maxblack, lastblack)
+            j += 1
+            i += 1
         return k - maxblack
 
     def getFolderNames(self, names: List[str]) -> List[str]:
@@ -1531,7 +1531,7 @@ class Solution:
         :return:
         """
 
-        def wordindex(word: str)-> (str,int):
+        def wordindex(word: str) -> (str, int):
             """
             判断是不是带后缀，是的话返回 (名字,后缀数字）
             :param word:
@@ -1542,23 +1542,23 @@ class Solution:
             res = re.findall(pattnum, word)
 
             if res:
-                return (re.sub(pattnum, "", word), int(res[0]))
+                return re.sub(pattnum, "", word), int(res[0])
             else:
                 return False
 
         libs = {}  # 存储名字和最小后缀  name: minnum
         exed = []  # 储存比最小后缀大，但是有名字的特例
-        for i,name in enumerate(names):
+        for i, name in enumerate(names):
             # 先做判断有没有后缀
             substr = wordindex(name)
             if substr:  # 有后缀
                 curname = substr[0]
                 curnum = substr[1]
                 if curname in libs:  # 是否在已存在的名字内
-                    if curnum > libs[curname]:   # 存在 并且大于最小数 ,这时可以直接用。 但是要保存到exed
+                    if curnum > libs[curname]:  # 存在 并且大于最小数 ,这时可以直接用。 但是要保存到exed
                         exed.append(name)
                     else:  # 但等于最小数，或者小于。 都取最小数来做后缀
-                        names[i]=""
+                        names[i] = ""
 
         return names
 
@@ -1571,15 +1571,323 @@ class Solution:
         """
         lens = len(nums)
         res = 0
-        for i in range(lens-2):
-            for j in range(i+1,lens-1):
+        for i in range(lens - 2):
+            for j in range(i + 1, lens - 1):
                 if nums[i] + diff == nums[j]:
-                    for k in range(j+1,lens):
+                    for k in range(j + 1, lens):
                         if nums[j] + diff == nums[k]:
                             res += 1
         return res
 
+    def halfQuestions(self, questions: List[int]) -> int:
+        """
+        LCS 02. 完成一半题目
+        :param questions:
+        :return:
+        """
+        n = len(questions) // 2
+        c = collections.Counter(questions)
+        nums = 0
+        for key, value in c.most_common():
+            nums += 1
+            n -= value
+            if n <= 0:
+                return nums
+        return nums
+
+    def averageValue(self, nums: List[int]) -> int:
+        """
+        2455. 可被三整除的偶数的平均值
+        :param nums:
+        :return:
+        """
+        res = 0
+        lenres = 0
+        for num in nums:
+            if num % 3 == 0:
+                if num % 2 == 0:
+                    res += num
+                    lenres += 1
+        return math.floor(res / lenres) if res else 0
+
+    def pivotIndex(self, nums: List[int]) -> int:
+        """
+        剑指 Offer II 012. 左右两边子数组的和相等
+        :param nums:
+        :return:
+        """
+        left = 0
+        right = sum(nums)
+        lens = len(nums)
+
+        for index in range(lens):
+            if index == 0:
+                left = 0
+            else:
+                left += nums[index - 1]
+            if index == lens - 1:
+                right = 0
+            else:
+                right -= nums[index]
+            if left == right:
+                return index
+        return -1
+
+    def twoSum(self, numbers: List[int], target: int) -> List[int]:
+        """
+        剑指 Offer II 006. 排序数组中两个数字之和
+        :param numbers:
+        :param target:
+        :return:
+        """
+        i = 0
+        j = len(numbers) - 1
+        while i < j:
+            res = numbers[i] + numbers[j]
+            if res == target:
+                return [i, j]
+            elif res > target:  # 和比目标大，那么往左移
+                j -= 1
+            else:  # 和比目标小，那么往右移
+                i += 1
+
+    def categorizeBox(self, length: int, width: int, height: int, mass: int) -> str:
+        """
+        2525. 根据规则将箱子分类
+        :param length:
+        :param width:
+        :param height:
+        :param mass:
+        :return:
+        """
+        Bulky = False
+        Heavy = False
+        area = length * width * height
+        if length >= math.pow(10, 4) or width >= math.pow(10, 4) or height >= math.pow(10, 4) or area >= math.pow(10,
+                                                                                                                  9):
+            Bulky = True
+        if mass >= 100:
+            Heavy = True
+
+        if Bulky and Heavy:
+            return "Both"
+        elif Bulky:
+            return "Bulky"
+        elif Heavy:
+            return "Heavy"
+        else:
+            return "Neither"
+
+    def getWinner(self, arr: List[int], k: int) -> int:
+        """
+        1535. 找出数组游戏的赢家
+        设置索引和当前数字  当前数字大于后续的数字为k次，就返回当前数字
+
+        一定会有最大，所以遍历完arr ，直接返回当前最大的即可。
+        :param arr:
+        :param k:
+        :return:
+        """
+        lens = len(arr)
+
+        if arr[0] > arr[1]:
+            curnum = arr[0]
+
+        else:
+            curnum = arr[1]
+        curk = 1
+        i = 2
+
+        while i < lens:
+            if curk == k:
+                return curnum
+            if curnum > arr[i]:
+                curk += 1
+            else:
+                curnum = arr[i]
+                curk = 1
+            i += 1
+
+        return curnum
+
+    def firstUniqChar(self, s: str) -> str:
+        """
+        剑指 Offer 50. 第一个只出现一次的字符
+        :param s:
+        :return:
+        """
+        libs = {}
+        for word in s:
+            if word not in libs:
+                libs[word] = 1
+            else:
+                libs[word] += 1
+        for word in s:
+            if libs[word] == 1:
+                return word
+        return " "
+
+    def getLeastNumbers(self, arr: List[int], k: int) -> List[int]:
+        """
+        剑指 Offer 40. 最小的k个数
+        :param arr:
+        :param k:
+        :return:
+        """
+        return sorted(arr)[0:k]
+
+    def printNumbers(self, n: int) -> List[int]:
+        """
+        剑指 Offer 17. 打印从1到最大的n位数
+        :param n:
+        :return:
+        """
+        maxnum = int('9' * n) + 1
+        return [i for i in range(1, maxnum)]
+
+    def exchange(self, nums: List[int]) -> List[int]:
+        """
+        剑指 Offer 21. 调整数组顺序使奇数位于偶数前面
+        :param nums:
+        :return:
+        """
+        left = []
+        right = []
+        for num in nums:
+            if num & 1:
+                left.append(num)
+            else:
+                right.append(num)
+        return left + right
+
+    def replaceSpace(self, s: str) -> str:
+        """
+        剑指 Offer 05. 替换空格
+        :param s:
+        :return:
+        """
+        return s.replace(" ","%20")
+
+    def findRepeatNumber(self, nums: List[int]) -> int:
+        """
+        剑指 Offer 03. 数组中重复的数字
+        :param nums:
+        :return:
+        """
+        libs = []
+        for num in nums:
+            if num in libs:
+                return num
+            libs.append(num)
+
+    def expectNumber(self, scores: List[int]) -> int:
+        """
+        LCP 11. 期望个数统计
+        :param scores:
+        :return:
+        """
+        return len(set(scores))
+
+    def maximum(self, a: int, b: int) -> int:
+        """
+        面试题 16.07. 最大数值
+        使用数学解法:
+        max(a,b) = (|a-b|+a+b)/2
+        :param a:
+        :param b:
+        :return:
+        """
+        return int((abs(a-b)+a+b)/2)
+
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        """
+        18. 四数之和
+        先排序， 然后使用两重循环+双指针 前两个数是两重循环。 后两个数用双指针。
+        nums[i] + nums[j] + nums[left] + nums[right]  left = j + 1  right = n- 1
+        如果 = target 则加入到答案内， 然后left右移到不同的数,然后right左移到不同的数
+        如果 < target ,left 右移
+        如果 > target , right 左移
+        剪枝：
+        1. 每层循环如果当前元素与上一次元素相同，则跳过当前元素.第一和第二重都是。
+        2. 确定第一个数后：nums[i] + nums[i+1] + nums[i+2] + nums[i+3] > target 最小的和都大于目标，则退出第一层循环
+        3. 确定第一个数后：nums[i] + nums[n-3] + nums[n-2] + nums[n-1] < target
+            当前组合最大都小于目标，不会有更大，则第一层循环进入num[i+1]循环。
+        4. 确定第二个数后：nums[i] + nums[j] + nums[j+1] + nums[j+2] > target 最小的和都大于目标，则退出第二层循环
+        5. 确定第二个数后：nums[i] + nums[j] + nums[n-2] + nums[n-1] < target 最小的和都大于目标，第二层循环进入nums[j+1]循环,
+            因为最大都小于目标，不会有更大的了
+        :param nums:
+        :param target:
+        :return:
+        """
+        nums.sort()
+        lens = len(nums)
+        if lens < 4:
+            return []
+        res = []
+        for i in range(lens-3):
+            if i > 0 and nums[i] == nums[i-1]:  # 剪枝1
+                continue
+            if nums[i] + nums[i+1] + nums[i+2] + nums[i+3] > target:  # 剪枝2
+                break
+            if nums[i] + nums[lens-3] + nums[lens-2] + nums[lens-1] < target:  # 剪枝3
+                continue
+            for j in range(i+1, lens-2):
+                if j > i + 1 and nums[j] == nums[j-1]:  # 剪枝1
+                    continue
+                if nums[i] + nums[j] + nums[j+1] + nums[j+2] > target:  # 剪枝4
+                    break
+                if nums[i] + nums[j] + nums[lens - 2] + nums[lens - 1] < target:  # 剪枝5
+                    continue
+                left = j + 1
+                right = lens - 1
+                while left < right:
+                    cur_sum = nums[i] + nums[j] + nums[left] + nums[right]
+                    if cur_sum == target:
+                        res.append([nums[i], nums[j], nums[left], nums[right]])
+                        while left < right and nums[left] == nums[left+1]:
+                            left += 1
+                        left += 1
+                        while left < right and nums[right] == nums[right-1]:
+                            right -= 1
+                        right -= 1
+                    elif cur_sum < target:  # 小于目标，左指针右移变大
+                        left += 1
+                    else:  # 大于目标，右指针左移变小
+                        right -= 1
+        return res
+
+    def twoSum2(self, nums: List[int], target: int) -> List[int]:
+        """
+        剑指 Offer 57. 和为s的两个数字
+        排序 + 双指针
+        :param nums:
+        :param target:
+        :return:
+        """
+        nums.sort()
+        lens = len(nums)
+        i = 0
+        j = lens - 1
+        while i < j:
+            if nums[i] + nums[j] == target:
+                return [nums[i], nums[j]]
+            elif nums[i] + nums[j] > target:    # 大于目标 右坐标左移
+                j -= 1
+            else:
+                i += 1
+        return []
+
+    def findString(self, words: List[str], s: str) -> int:
+        """
+        面试题 10.05. 稀疏数组搜索
+        :param words:
+        :param s:
+        :return:
+        """
+
+
+
 
 if __name__ == '__main__':
     s = Solution()
-    print(s.arithmeticTriplets(nums = [4,5,6,7,8,9], diff = 2))
+    print(s.twoSum2(nums = [10,26,30,31,47,60], target = 40))
