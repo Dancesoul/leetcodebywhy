@@ -1766,7 +1766,7 @@ class Solution:
         :param s:
         :return:
         """
-        return s.replace(" ","%20")
+        return s.replace(" ", "%20")
 
     def findRepeatNumber(self, nums: List[int]) -> int:
         """
@@ -1797,7 +1797,7 @@ class Solution:
         :param b:
         :return:
         """
-        return int((abs(a-b)+a+b)/2)
+        return int((abs(a - b) + a + b) / 2)
 
     def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
         """
@@ -1824,17 +1824,17 @@ class Solution:
         if lens < 4:
             return []
         res = []
-        for i in range(lens-3):
-            if i > 0 and nums[i] == nums[i-1]:  # 剪枝1
+        for i in range(lens - 3):
+            if i > 0 and nums[i] == nums[i - 1]:  # 剪枝1
                 continue
-            if nums[i] + nums[i+1] + nums[i+2] + nums[i+3] > target:  # 剪枝2
+            if nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target:  # 剪枝2
                 break
-            if nums[i] + nums[lens-3] + nums[lens-2] + nums[lens-1] < target:  # 剪枝3
+            if nums[i] + nums[lens - 3] + nums[lens - 2] + nums[lens - 1] < target:  # 剪枝3
                 continue
-            for j in range(i+1, lens-2):
-                if j > i + 1 and nums[j] == nums[j-1]:  # 剪枝1
+            for j in range(i + 1, lens - 2):
+                if j > i + 1 and nums[j] == nums[j - 1]:  # 剪枝1
                     continue
-                if nums[i] + nums[j] + nums[j+1] + nums[j+2] > target:  # 剪枝4
+                if nums[i] + nums[j] + nums[j + 1] + nums[j + 2] > target:  # 剪枝4
                     break
                 if nums[i] + nums[j] + nums[lens - 2] + nums[lens - 1] < target:  # 剪枝5
                     continue
@@ -1844,10 +1844,10 @@ class Solution:
                     cur_sum = nums[i] + nums[j] + nums[left] + nums[right]
                     if cur_sum == target:
                         res.append([nums[i], nums[j], nums[left], nums[right]])
-                        while left < right and nums[left] == nums[left+1]:
+                        while left < right and nums[left] == nums[left + 1]:
                             left += 1
                         left += 1
-                        while left < right and nums[right] == nums[right-1]:
+                        while left < right and nums[right] == nums[right - 1]:
                             right -= 1
                         right -= 1
                     elif cur_sum < target:  # 小于目标，左指针右移变大
@@ -1871,23 +1871,13 @@ class Solution:
         while i < j:
             if nums[i] + nums[j] == target:
                 return [nums[i], nums[j]]
-            elif nums[i] + nums[j] > target:    # 大于目标 右坐标左移
+            elif nums[i] + nums[j] > target:  # 大于目标 右坐标左移
                 j -= 1
             else:
                 i += 1
         return []
 
-    def findString(self, words: List[str], s: str) -> int:
-        """
-        面试题 10.05. 稀疏数组搜索
-        :param words:
-        :param s:
-        :return:
-        """
-
-
-
 
 if __name__ == '__main__':
     s = Solution()
-    print(s.twoSum2(nums = [10,26,30,31,47,60], target = 40))
+    print(s.twoSum2(nums=[10, 26, 30, 31, 47, 60], target=40))
