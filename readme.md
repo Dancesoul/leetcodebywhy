@@ -1,6 +1,6 @@
 # LeetCode 做题日记
 
-#### LeetCode id ：miracle.why
+#### LeetCode id ：miracle.why  https://leetcode.cn/u/miracle-666/
 #### EMail： miracle.why@qq.com
 
 Single 目录下的都是单独的一题，是很久以前做的题。也有可能是需要单独一个文件的题，例如类的编写。
