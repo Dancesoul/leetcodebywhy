@@ -565,6 +565,16 @@ class Solution:
         """
         return (n > 0) and ((n & (n - 1)) == 0)
 
+    def punishmentNumber(self, n: int) -> int:
+        """
+        2698. 求一个整数的惩罚数
+        :param n:
+        :return:
+        """
+        for i in range(1, n + 1):
+            temp = i * i
+
+
 
 if __name__ == '__main__':
     s = Solution()
