@@ -574,8 +574,22 @@ class Solution:
         for i in range(1, n + 1):
             temp = i * i
 
+    def countDigits(self, num: int) -> int:
+        """
+        2520. 统计能整除数字的位数
+        :param num:
+        :return:
+        """
+        res = 0
+        temp = num
+        while temp:
+            if num % (temp%10) == 0:
+                res += 1
+            temp //= 10
+        return res
+
 
 
 if __name__ == '__main__':
     s = Solution()
-    print(s.rotate(nums=[1, 2, 3, 4, 5, 6, 7], k=3))
+    print(s.countDigits(1248))
